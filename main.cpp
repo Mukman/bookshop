@@ -187,7 +187,8 @@ void showAvailableBooks()
 {
  fstream file;
  Book newBook;
-file.open("book_shop.txt",ios::in|ios::app);
+//file.open("book_shop.txt",ios::in|ios::app);
+file.open("book_shop.txt", ios::in);
 
     if (!file)
 	{
