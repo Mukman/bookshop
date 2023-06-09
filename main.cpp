@@ -1,19 +1,10 @@
-// main branch 
-// muktar and abdisa 
-
 #include <iostream>
 #include <string>
-#include <conio.h>
-#include <cstdlib>
 #include <fstream>
 
 using namespace std;
 
 const int MAX_BOOKS = 100;
-void clearScreen() 
-{
-    system("cls");
-}
 
 struct Book
  {
@@ -21,8 +12,6 @@ struct Book
     string author;
     string category;
     int quantity;
-    int shelf_no;
-    short row;
     double price;
 };
 
@@ -47,7 +36,7 @@ void orderBook();
 int getMenuChoice()
  {
     int choice;
-     clearScreen();
+
     cout << "\nMenu:\n";
     cout << "1. Add new books\n";
     cout << "2. Show available books\n";
@@ -105,12 +94,12 @@ void customerMenu()
     int choice;
     do
 	{
-           clearScreen();
+
         cout << "\nMenu:\n";
-        cout << "1. List of Avaliable books \n";
+        cout << "1. Show book list\n";
         cout << "2. Purchase book\n";
-        cout << "3. Search Avaliable books\n";
-        cout << "4. Order books\n";
+        cout << "3. Search book\n";
+        cout << "4. Order book\n";
         cout << "5. Logout\n";
         cout << "Enter your choice: ";
         cin >> choice;
@@ -140,54 +129,30 @@ void customerMenu()
 }
 
 // Function to authenticate the owner
-struct owner
-{
-     string password;
-     string owner_name;
-    int login()
+void login()
+ {
+    string username, password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+
+    // Add your own authentication logic here
+    // For simplicity, let's assume username: admin, password: admin
+    if (username == "admin" && password == "admin")
 	{
-		clearScreen();
-        // default
-        password = "admin";
-        owner_name = "admin";
-
-        // user input
-        string user_name;
-        string user_pass;
-
-        cout<<"Enter your user name:";
-        cin>>user_name;
-        cout<<"Enter your  password:";
-        cin>>user_pass;
-
-        while(true)
-		{
-            if(user_name == owner_name && user_pass == password)
-			{
-                cout<<"Logged in sucssfuly"<<endl;
-                ownerMenu();
-                break;
-            }
-            else
-			{
-				clearScreen();
-                cout<<"\nTry again!"<<endl;
-                cout<<"Enter your user name:";
-                cin>>user_name;
-                cout<<"Enter your  password:";
-                cin>>user_pass;
-            }
-
-        };
-
-
+        cout << "Login successful!\n";
+        ownerMenu();
     }
-};
+	else
+	 {
+        cout << "Login failed. Invalid username or password.\n";
+    }
+}
 
 // Function to add new books
 void addNewBook()
 {
-    clearScreen();
     fstream file;
     cin.ignore();
     if (bookCount == MAX_BOOKS)
@@ -195,25 +160,21 @@ void addNewBook()
         cout << "Maximum book limit reached.\n";
         return;
     }
-      
+
     Book newBook;
     cout << "Enter book title: ";
     getline(cin, newBook.title);
-    cout << "Enter author name: ";
+    cout << "Enter author: ";
     getline(cin, newBook.author);
-    cout << "Enter category of book: ";
+    cout << "Enter category: ";
     getline(cin, newBook.category);
     cout << "Enter quantity: ";
     cin >> newBook.quantity;
-    cout<<"Enter the Shelf No of Book:";
-    cin>>newBook.shelf_no;
-    cout<<"Enter the row of the shelf no:";
-    cin>>newBook.row;
-    cout << "Enter the price of book: ";
+    cout << "Enter price: ";
     cin >> newBook.price;
     file.open("book_shop.txt",ios::out|ios::app);
     file<<"\n" <<newBook.title<<" \n "<<newBook.author<<" \n "<<newBook.category<<" \n "
-	<<newBook.quantity<<"  \n "<<newBook.shelf_no<<" \n "<<newBook.row<<" \n "<<newBook.price<<"\n";
+	<<newBook.quantity<<"  \n "<<newBook.price<<"\n";
     books[bookCount] = newBook;
     bookCount++;
 
@@ -224,34 +185,31 @@ void addNewBook()
 // Function to show available books
 void showAvailableBooks()
 {
-   clearScreen();
-   fstream file;
-   Book newBook;
-   file.open("book_shop.txt",ios::in|ios::app);
+ fstream file;
+ Book newBook;
+//file.open("book_shop.txt",ios::in|ios::app);
+file.open("book_shop.txt", ios::in);
 
     if (!file)
 	{
-        cout << "file is opening Error\n";
+        cout << "file is not open\n";
     }
 	 else
 	  {
         cout << "\nAvailable Books:\n";
-        file>> newBook.title>> newBook.author>>newBook.category;
-        file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
-        while (!file.eof())
+          file>> newBook.title>> newBook.author;
+           file>> newBook.category>> newBook.quantity>> newBook.price;
+       while (!file.eof())
 	   {
 	   	    cout << "Title: " ;cout << newBook.title << endl;
             cout << "Author: "; cout << newBook.author<< endl;
             cout << "Category:";cout << newBook.category  << endl;
             cout << "Quantity: ";cout << newBook.quantity << endl;
-            cout << "Shelf No: ";cout << newBook.shelf_no<<endl;
-            cout << "Row No  :";cout  << newBook.row<<endl;
             cout << "Price: $";cout << newBook.price << endl;
             cout << "--------------------------\n";
-       	 file>> newBook.title>> newBook.author>>newBook.category;
-		 file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+            file>> newBook.title>> newBook.author;
+            file>> newBook.category>> newBook.quantity>> newBook.price;
 			file.close();
-			system("pause");
 	   }
     }
 }
@@ -259,9 +217,8 @@ void showAvailableBooks()
 // Function to search books
 void searchBooks()
  {
-    clearScreen();
  	fstream file;
- 	cout<<"Search Avaliable  book \n";
+ 	cout<<"Cheak you want book \n";
  	file.open("book_shop.txt",ios::in|ios::app);
  	if (!file)
 	 {
@@ -275,39 +232,35 @@ void searchBooks()
     string searchTerm;
     cout << "Enter the book title  to search: ";
     getline(cin, searchTerm);
-   	 file>> newBook.title>> newBook.author>>newBook.category;
-     file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+    file>> newBook.title>> newBook.author;
+	file>> newBook.category>> newBook.quantity>> newBook.price;
 	while (!file.eof())
 	{
 		if (searchTerm==newBook.title)
 		{
-		cout<<"Your Specific searched book is:\n";
+		cout<<"Your Specific cheak book is:\n";
         cout << "Title: " ;cout << newBook.title << endl;
         cout << "Author: "; cout << newBook.author<< endl;
         cout << "Category:";cout << newBook.category  << endl;
         cout << "Quantity: ";cout << newBook.quantity << endl;
-        cout << "Shelf No: ";cout << newBook.shelf_no<<endl;
-        cout << "Row No  :";cout  << newBook.row<<endl;
         cout << "Price: $";cout << newBook.price << endl;
         cout << "--------------------------\n";
         count++;
         break;
 
 		}
-		 file>> newBook.title>> newBook.author>>newBook.category;
-		 file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+		 file>> newBook.title>> newBook.author;
+	     file>> newBook.category>> newBook.quantity>> newBook.price;
 	}
 	file.close();
 	if (count==0)
 		cout<<"Book title is not found....\n";
 	 }
-	 	system("pause");
 }
 
 // Function to modify books
 void modifyBooks()
 {
-    clearScreen();
 	fstream file,file1;
 	int count=0;
 	struct Book
@@ -316,8 +269,6 @@ void modifyBooks()
     string author;
     string category;
     int quantity;
-    int shelf_no;
-    int row;
     double price;
 };
 	struct Books
@@ -326,8 +277,6 @@ void modifyBooks()
     string author_new;
     string category_new;
     int quantity_new;
-    int shelf_no_new;
-    int row_new;
     double price_new;
 	};
 	file1.open("book_shop1.txt",ios::app|ios::out);
@@ -345,15 +294,14 @@ void modifyBooks()
     string searchTerm;
     cout << "Enter the book title or author to modify: ";
     getline(cin, searchTerm);
-    file>> newBook.title>> newBook.author>>newBook.category;
-    file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+    file>>newBook.title>>newBook.author;
+	file>>newBook.category>>newBook.quantity>>newBook.price;
 	while (!file.eof())
 	{
 		if (searchTerm==newBook.title)
 		{
-		  clearScreen();
 		cout<<"Modifying a new book\n";
-        cout << "Enter  new  title: ";
+        cout << "Enter  new book title: ";
         getline(cin, modBooks.title_new);
         cout << "Enter  new author: ";
         getline(cin,modBooks. author_new);
@@ -361,10 +309,6 @@ void modifyBooks()
         getline(cin, modBooks.category_new);
         cout << "Enter  new quantity: ";
         cin >> modBooks.quantity_new;
-        cout<< "Enter new shelf no: ";
-        cin>>modBooks.shelf_no_new;
-        cout<< "Enter Row of shelf no:";
-        cin>>modBooks.row_new;
         cout << "Enter new price: ";
         cin >> modBooks.price_new;
         file1<<"\n" <<modBooks.title_new<<" \n "<<modBooks.author_new<<" \n "<<modBooks.category_new<<" \n "
@@ -375,8 +319,8 @@ void modifyBooks()
 		else
 		file1<<"\n" <<modBooks.title_new<<" \n "<<modBooks.author_new<<" \n "<<modBooks.category_new<<" \n "
         <<modBooks.quantity_new<<"  \n "<<modBooks.price_new<<"\n";
-        file>> newBook.title>> newBook.author>>newBook.category;
-        file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+        file>> newBook.title>> newBook.author;
+	    file>> newBook.category>> newBook.quantity>> newBook.price;
 
 	}
     if (count==0)
@@ -393,7 +337,6 @@ void modifyBooks()
 // Function to delete books
 void deleteBooks()
 {
-    clearScreen();
 	fstream file,file1;
 	int count=0;
 		struct Book
@@ -402,8 +345,6 @@ void deleteBooks()
     string author;
     string category;
     int quantity;
-    int shelf_no;
-    int row;
     double price;
 };
 	struct Books
@@ -412,11 +353,9 @@ void deleteBooks()
     string author_new;
     string category_new;
     int quantity_new;
-    int shelf_no_new;
-    int row_new;
     double price_new;
 	};
-	cout<<"Delete books record\n";
+	cout<<"Delat books record\n";
 	file1.open("book_shop1.txt",ios::app|ios::out);
  	file.open("book_shop.txt",ios::in|ios::app);
 	if (!file)
@@ -431,22 +370,21 @@ void deleteBooks()
     string searchTerm;
     cout << "Enter the book title or author to delete: ";
     getline(cin, searchTerm);
-    file>> newBook.title>> newBook.author>>newBook.category;
-    file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+	file>>newBook.title>>newBook.author;
+	file>>newBook.category>>newBook.quantity>>newBook.price;
 	while (!file.eof())
 	{
 		if (searchTerm==newBook.title)
 		{
-			 system("cls");
-		cout<<"Delete book record\n";
+		cout<<"Delat book record\n";
 		cout<<"The book was deleted sucssesfuly.....\n";
 		count++;
 		}
 		else
 	file1<<"\n" <<modBooks.title_new<<" \n "<<modBooks.author_new<<" \n "<<modBooks.category_new<<" \n "
     <<modBooks.quantity_new<<"  \n "<<modBooks.price_new<<"\n";
-	 file>> newBook.title>> newBook.author>>newBook.category;
-     file>> newBook.quantity>>newBook.shelf_no>>newBook.row>>newBook.price;
+	file>> newBook.title>> newBook.author;
+    file>> newBook.category>> newBook.quantity>> newBook.price;
 	}
 	if (count==0)
 	{
@@ -501,7 +439,7 @@ void customerPurchase()
 	}
     cin.ignore();
     string searchTerm;
-    cout << "Enter the book title  to purchase: ";
+    cout << "Enter the book title or author to purchase: ";
     getline(cin, searchTerm);
 
     bool found = false;
@@ -519,7 +457,6 @@ void customerPurchase()
             }
             found = true;
         }
-        system("pause");
     }
 
     if (!found)
@@ -531,7 +468,6 @@ void customerPurchase()
 // Function for customer to search books for purchase
 void searchBookForPurchase()
  {
- 	 //system("cls");
   fstream file;
  	cout<<"Cheak you want book \n";
  	file.open("book_shop.txt",ios::in|ios::app);
@@ -553,7 +489,6 @@ void searchBookForPurchase()
 	{
 		if (searchTerm==newBook.title)
 		{
-			// system("cls");
 		cout<<"Your Specific cheak book is:\n";
         cout << "Title: " ;cout << newBook.title << endl;
         cout << "Author: "; cout << newBook.author<< endl;
@@ -570,7 +505,6 @@ void searchBookForPurchase()
 	     if (no==1)
 		 {
 		 	int choice;
-		 	 //system("cls");
 		 	cout<<"Welcome To our Purches Option\n";
 		 	cout<<"1.To Purches throwh Tell birr\n";
 		 	cout<<"2.To purchese throwh CBE bank\n";
@@ -600,7 +534,6 @@ void searchBookForPurchase()
 // Function for customer to order books
 void orderBook()
  {
- 	 //system("cls");
  	fstream file;
     cin.ignore();
     if (bookCount == MAX_BOOKS)
@@ -633,18 +566,17 @@ int main()
     int choice;
     do
 	 {
-	    
-        cout<< R"(
-     ____              _       _____ _                    _____           _                 
-    |  _ \            | |     / ____| |                  / ____|         | |                
-    | |_) | ___   ___ | | __ | (___ | |__   ___  _ __   | (___  _   _ ___| |_ ___ _ __ ___  
-    |  _ < / _ \ / _ \| |/ /  \___ \| '_ \ / _ \| '_ \   \___ \| | | / __| __/ _ \ '_ ` _ \ 
-    | |_) | (_) | (_) |   <   ____) | | | | (_) | |_) |  ____) | |_| \__ \ ||  __/ | | | | |
-    |____/ \___/ \___/|_|\_\ |_____/|_| |_|\___/| .__/  |_____/ \__, |___/\__\___|_| |_| |_|
-                                                | |              __/ |                      
-                                                |_|             |___/                       
-    )"<<endl;
-	 	owner owner1;
+        cout<<"\n";
+        cout<<"  ____              _       _____ _                    _____           _\n";
+        cout<<" |  _ \            | |     / ____| |                  / ____|         | |\n";
+        cout<<" | |_) | ___   ___ | | __ | (___ | |__   ___  _ __   | (___  _   _ ___| |_ ___ _ __ ___\n";
+        cout<<" |  _ < / _ \ / _ \| |/ /  \___ \| '_ \ / _ \| '_ \   \___ \| | | / __| __/ _ \ '_ ` _ \\n";
+        cout<<" | |_) | (_) | (_) |   <   ____) | | | | (_) | |_) |  ____) | |_| \__ \ ||  __/ | | | | |\n";
+        cout<<" |____/ \___/ \___/|_|\_\ |_____/|_| |_|\___/| .__/  |_____/ \__, |___/\__\___|_| |_| |_|\n";
+        cout<<"                                             | |              __/ |\n";
+        cout<<"                                             |_|             |___/\n";
+        cout<<"\n";
+
         cout << "Welcome to the Book Shop Management System\n";
         cout << "1. Owner\n";
         cout << "2. Customer\n";
@@ -655,7 +587,7 @@ int main()
         switch (choice)
 		 {
             case 1:
-               owner1.login();
+                login();
                 break;
             case 2:
                 customerMenu();
